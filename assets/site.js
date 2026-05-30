@@ -18,17 +18,13 @@
       : "";
     const alt = escapeHtml(item.alt || title);
     const focus = item.focus ? ` style="--focus: ${escapeAttribute(item.focus)}"` : "";
-    const url = item.url ? escapeAttribute(item.url) : "";
     const media = hasImage
       ? `<img src="${escapeAttribute(item.src)}" alt="${alt}" loading="lazy">`
       : `<div class="placeholder"><span class="mark">✦</span><span class="label">Upload Pending</span></div>`;
-    const frame = url
-      ? `<a class="frame" href="${url}" target="_blank" rel="noreferrer"${focus}>${media}</a>`
-      : `<div class="frame"${focus}>${media}</div>`;
 
     return `
-      <article class="work">
-        ${frame}
+      <article class="work" role="button" tabindex="0" data-index="${index}">
+        <div class="frame"${focus}>${media}</div>
         <div class="meta">
           <b>${title}</b>
           <span>${meta}</span>
@@ -42,6 +38,60 @@
       <span><span class="plus">+</span><span class="label">Add Photo</span><span class="hint label">Slot ${nextSlot}</span></span>
     </button>
   `;
+  bindPostCards(itemsToRender);
+  }
+
+  function bindPostCards(items) {
+    grid.querySelectorAll(".work").forEach((card) => {
+      const open = () => openPost(items[Number(card.dataset.index)]);
+      card.addEventListener("click", open);
+      card.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          open();
+        }
+      });
+    });
+  }
+
+  function openPost(item) {
+    if (!item) return;
+    const dialog = document.getElementById("post-dialog");
+    const title = document.getElementById("post-title");
+    const meta = document.getElementById("post-meta");
+    const model = document.getElementById("post-model");
+    const images = document.getElementById("post-images");
+    const source = document.getElementById("post-source");
+    const close = document.getElementById("close-post");
+    if (!dialog || !title || !meta || !model || !images || !source || !close) return;
+
+    title.textContent = item.title || "";
+    meta.textContent = item.meta || "";
+    model.textContent = item.model || "";
+
+    const imageList = Array.isArray(item.images) && item.images.length ? item.images : [item.src].filter(Boolean);
+    images.innerHTML = imageList.map((src, index) => {
+      const alt = escapeHtml(`${item.title || "Portfolio"} ${index + 1}`);
+      return `<img src="${escapeAttribute(src)}" alt="${alt}" loading="lazy">`;
+    }).join("");
+
+    if (item.url) {
+      source.href = item.url;
+      source.hidden = false;
+    } else {
+      source.hidden = true;
+    }
+
+    if (!dialog.dataset.bound) {
+      close.addEventListener("click", () => dialog.close());
+      dialog.addEventListener("click", (event) => {
+        if (event.target === dialog) dialog.close();
+      });
+      dialog.dataset.bound = "true";
+    }
+
+    if (typeof dialog.showModal === "function") dialog.showModal();
+    else dialog.setAttribute("open", "");
   }
 
   function bindUploader() {
