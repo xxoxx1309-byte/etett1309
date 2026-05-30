@@ -316,6 +316,44 @@
       color: var(--dim);
     }
 
+    .order-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin: -16px 0 22px;
+    }
+
+    .order-actions input {
+      min-height: 42px;
+      width: min(320px, 100%);
+      border: 1px solid var(--line);
+      background: var(--surface-low);
+      color: var(--text);
+      padding: 0 12px;
+      outline: 0;
+    }
+
+    .order-actions button {
+      min-height: 42px;
+      border: 1px solid var(--primary);
+      background: transparent;
+      color: var(--primary);
+      padding: 0 14px;
+      cursor: pointer;
+    }
+
+    .order-actions button.primary {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+
+    .order-status {
+      min-height: 18px;
+      color: var(--dim);
+      font-size: 13px;
+    }
+
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -330,6 +368,16 @@
       position: relative;
       cursor: pointer;
       transition: border-color .5s ease, transform .5s ease;
+    }
+
+    .work.dragging {
+      opacity: .45;
+      border-color: var(--primary);
+    }
+
+    .work.drag-over {
+      outline: 2px solid var(--primary);
+      outline-offset: -2px;
     }
 
     .work:hover {
@@ -677,13 +725,17 @@
 
     .post-images {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 12px;
+      align-items: start;
     }
 
     .post-images img {
       width: 100%;
+      aspect-ratio: 3 / 4;
       height: auto;
+      object-fit: cover;
+      object-position: 50% 22%;
       display: block;
       border: 1px solid rgba(77, 70, 53, .7);
       background: var(--surface);
@@ -704,6 +756,50 @@
       padding: 0 16px;
       border: 1px solid var(--primary);
       color: var(--primary);
+    }
+
+    .danger-link {
+      min-height: 44px;
+      border: 1px solid rgba(255, 180, 171, .7);
+      background: transparent;
+      color: #ffb4ab;
+      padding: 0 16px;
+      cursor: pointer;
+    }
+
+    .delete-box {
+      display: none;
+      width: 100%;
+      margin-top: 14px;
+      border: 1px solid rgba(255, 180, 171, .35);
+      padding: 16px;
+      background: rgba(255, 180, 171, .06);
+    }
+
+    .delete-box.open { display: grid; gap: 12px; }
+
+    .delete-box input {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid rgba(255, 180, 171, .45);
+      background: transparent;
+      color: var(--text);
+      padding: 10px 0;
+      outline: 0;
+    }
+
+    .delete-box button {
+      min-height: 42px;
+      border: 1px solid #ffb4ab;
+      background: #ffb4ab;
+      color: #2b0704;
+      cursor: pointer;
+    }
+
+    .delete-status {
+      color: #ffb4ab;
+      font-size: 13px;
+      min-height: 18px;
     }
 
     footer {
@@ -795,6 +891,12 @@
             <h2>Portfolio Gallery</h2>
           </div>
           <div class="gallery-actions label">Square Archive</div>
+        </div>
+        <div class="order-actions">
+          <input id="order-token" type="password" autocomplete="off" placeholder="순서 저장용 업로드 키">
+          <button class="label" id="enable-order" type="button">Reorder</button>
+          <button class="label primary" id="save-order" type="button">Save Order</button>
+          <span class="order-status" id="order-status"></span>
         </div>
         <div class="gallery" id="gallery-grid" aria-live="polite"></div>
       </div>
@@ -942,6 +1044,12 @@
       <div class="post-images" id="post-images"></div>
       <div class="post-actions">
         <a class="post-link label" id="post-source" href="#" target="_blank" rel="noreferrer">X Post</a>
+        <button class="danger-link label" id="open-delete" type="button">Delete</button>
+        <div class="delete-box" id="delete-box">
+          <input id="delete-token" type="password" autocomplete="off" placeholder="업로드 키 입력">
+          <button class="label" id="confirm-delete" type="button">Delete This Post</button>
+          <div class="delete-status" id="delete-status"></div>
+        </div>
       </div>
     </div>
   </dialog>
