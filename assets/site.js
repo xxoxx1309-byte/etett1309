@@ -3,11 +3,11 @@
   if (!grid) return;
 
   const emptySlots = [
-    { title: "Photo Slot 01", meta: "Upload an image with the + button" },
-    { title: "Photo Slot 02", meta: "Square gallery cell" },
-    { title: "Photo Slot 03", meta: "Square gallery cell" },
-    { title: "Photo Slot 04", meta: "Square gallery cell" },
-    { title: "Photo Slot 05", meta: "Square gallery cell" }
+    { title: "Slot 01", meta: "Pending" },
+    { title: "Slot 02", meta: "Pending" },
+    { title: "Slot 03", meta: "Pending" },
+    { title: "Slot 04", meta: "Pending" },
+    { title: "Slot 05", meta: "Pending" }
   ];
 
   const portfolioItems = Array.isArray(window.PORTFOLIO_ITEMS) ? window.PORTFOLIO_ITEMS : [];
@@ -36,7 +36,7 @@
     `;
   }).join("") + `
     <button class="add-work" type="button" id="open-upload" aria-label="사진 추가">
-      <span><span class="plus">+</span><span class="label">Add Photo</span></span>
+      <span><span class="plus">+</span><span class="label">Add Photo</span><span class="hint label">Slot 06</span></span>
     </button>
   `;
   }
@@ -68,7 +68,7 @@
     form.dataset.bound = "true";
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-      setStatus("업로드 준비 중...");
+      setStatus("Preparing");
       submit.disabled = true;
 
       try {
@@ -80,22 +80,22 @@
         const filename = normalizeFilename(document.getElementById("filename").value, file);
         const imagePath = `assets/gallery/${filename}`;
 
-        if (!token || !file || !title) throw new Error("토큰, 사진, 제목은 필수입니다.");
-        if (file.size > 8 * 1024 * 1024) throw new Error("8MB 이하 이미지로 줄여주세요.");
+        if (!token || !file || !title) throw new Error("업로드 키, 사진, 제목은 필수입니다.");
+        if (file.size > 8 * 1024 * 1024) throw new Error("8MB 이하 이미지만 업로드할 수 있습니다.");
 
-        setStatus("이미지를 GitHub 저장소에 업로드하는 중...");
+        setStatus("Uploading image");
         await putFile(token, imagePath, await fileToBase64(file), `Upload gallery image ${filename}`);
 
-        setStatus("갤러리 목록을 불러오는 중...");
+        setStatus("Updating list");
         const current = await getFile(token, GALLERY_PATH);
         const nextItems = parseGallery(current.text);
         nextItems.push({ src: imagePath, title, meta, alt });
 
-        setStatus("갤러리 목록을 업데이트하는 중...");
+        setStatus("Saving");
         const nextGallery = `window.PORTFOLIO_ITEMS = ${JSON.stringify(nextItems, null, 2)};\n`;
         await putFile(token, GALLERY_PATH, textToBase64(nextGallery), "Update gallery list", current.sha);
 
-        setStatus("완료! GitHub Pages 빌드가 끝나면 갤러리에 반영됩니다.", "ok");
+        setStatus("Done", "ok");
         const updatedItems = nextItems.concat(emptySlots.slice(0, Math.max(0, 5 - nextItems.length)));
         renderGallery(updatedItems);
         bindUploader();
