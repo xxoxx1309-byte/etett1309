@@ -7,10 +7,12 @@
   bindUploader();
 
   function renderGallery(itemsToRender) {
+  const nextSlot = String(itemsToRender.length + 1).padStart(2, "0");
   grid.innerHTML = itemsToRender.map((item, index) => {
     const hasImage = Boolean(item.src);
     const title = escapeHtml(item.title || `Work ${String(index + 1).padStart(2, "0")}`);
     const meta = escapeHtml(item.meta || "ETETT1309 Archive");
+    const model = item.model ? `<span class="model">${escapeHtml(item.model)}</span>` : "";
     const alt = escapeHtml(item.alt || title);
     const url = item.url ? escapeAttribute(item.url) : "";
     const media = hasImage
@@ -26,12 +28,13 @@
         <div class="meta">
           <b>${title}</b>
           <span>${meta}</span>
+          ${model}
         </div>
       </article>
     `;
   }).join("") + `
     <button class="add-work" type="button" id="open-upload" aria-label="사진 추가">
-      <span><span class="plus">+</span><span class="label">Add Photo</span><span class="hint label">Slot 06</span></span>
+      <span><span class="plus">+</span><span class="label">Add Photo</span><span class="hint label">Slot ${nextSlot}</span></span>
     </button>
   `;
   }
