@@ -158,8 +158,11 @@
     const imageList = Array.isArray(item.images) && item.images.length ? item.images : [item.src].filter(Boolean);
     images.innerHTML = imageList.map((src, index) => {
       const alt = escapeHtml(`${item.title || "Portfolio"} ${index + 1}`);
-      return `<img src="${escapeAttribute(src)}" alt="${alt}" loading="lazy">`;
+      return `<img src="${escapeAttribute(src)}" alt="${alt}" loading="lazy" data-full="${escapeAttribute(src)}" data-caption="${alt}">`;
     }).join("");
+    images.querySelectorAll("img").forEach((image) => {
+      image.addEventListener("click", () => openImageViewer(image.dataset.full, image.dataset.caption || image.alt));
+    });
 
     if (item.url) {
       source.href = item.url;
@@ -183,6 +186,30 @@
     deleteBox.classList.remove("open");
     deleteToken.value = "";
     deleteStatus.textContent = "";
+    if (typeof dialog.showModal === "function") dialog.showModal();
+    else dialog.setAttribute("open", "");
+  }
+
+  function openImageViewer(src, caption) {
+    const dialog = document.getElementById("image-viewer");
+    const image = document.getElementById("viewer-image");
+    const captionEl = document.getElementById("viewer-caption");
+    const close = document.getElementById("close-viewer");
+    if (!dialog || !image || !captionEl || !close || !src) return;
+
+    image.src = src;
+    image.alt = caption || "";
+    captionEl.textContent = caption || "Preview";
+
+    if (!dialog.dataset.bound) {
+      close.addEventListener("click", () => dialog.close());
+      image.addEventListener("click", () => dialog.close());
+      dialog.addEventListener("click", (event) => {
+        if (event.target === dialog) dialog.close();
+      });
+      dialog.dataset.bound = "true";
+    }
+
     if (typeof dialog.showModal === "function") dialog.showModal();
     else dialog.setAttribute("open", "");
   }
