@@ -3,10 +3,12 @@
   if (!grid) return;
 
   const fallbackItems = [
-    { title: "Photo Slot 01", meta: "Cosplay / Concept / Archive" },
-    { title: "Photo Slot 02", meta: "Character / Mood / Color" },
-    { title: "Photo Slot 03", meta: "Studio / Outdoor / Event" },
-    { title: "Photo Slot 04", meta: "Private / Doujin / Session" }
+    { title: "Photo Slot 01", meta: "Upload an image from admin.html" },
+    { title: "Photo Slot 02", meta: "Square gallery cell" },
+    { title: "Photo Slot 03", meta: "Square gallery cell" },
+    { title: "Photo Slot 04", meta: "Square gallery cell" },
+    { title: "Photo Slot 05", meta: "Square gallery cell" },
+    { title: "Photo Slot 06", meta: "Square gallery cell" }
   ];
 
   const items = Array.isArray(window.PORTFOLIO_ITEMS) && window.PORTFOLIO_ITEMS.length
