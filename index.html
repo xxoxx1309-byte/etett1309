@@ -328,6 +328,7 @@
       background: var(--surface);
       overflow: hidden;
       position: relative;
+      cursor: pointer;
       transition: border-color .5s ease, transform .5s ease;
     }
 
@@ -643,6 +644,68 @@
     .upload-status.ok { color: var(--primary); }
     .upload-status.error { color: #ffb4ab; }
 
+    .post-panel {
+      padding: 28px;
+    }
+
+    .post-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 22px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 24px;
+    }
+
+    .post-title h2 {
+      font-size: clamp(28px, 5vw, 44px);
+      margin-bottom: 12px;
+    }
+
+    .post-title p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .post-title .model {
+      color: var(--dim);
+      margin-top: 8px;
+      font-weight: 700;
+    }
+
+    .post-images {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .post-images img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border: 1px solid rgba(77, 70, 53, .7);
+      background: var(--surface);
+    }
+
+    .post-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .post-link {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+    }
+
     footer {
       padding: 64px 0;
       border-top: 1px solid var(--line);
@@ -686,6 +749,8 @@
       .contact-row { grid-template-columns: 1fr; gap: 6px; }
       .upload-panel { padding: 22px; }
       .upload-form { grid-template-columns: 1fr; }
+      .post-panel { padding: 18px; }
+      .post-images { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -860,6 +925,24 @@
         <button class="submit-button label" id="submit-upload" type="submit">Upload</button>
         <div class="upload-status" id="upload-status">Ready</div>
       </form>
+    </div>
+  </dialog>
+
+  <dialog id="post-dialog">
+    <div class="post-panel">
+      <div class="post-head">
+        <div class="post-title">
+          <p class="label" style="color: var(--primary); margin: 0 0 10px;">Portfolio Post</p>
+          <h2 id="post-title"></h2>
+          <p id="post-meta"></p>
+          <p class="model" id="post-model"></p>
+        </div>
+        <button class="icon-button" type="button" id="close-post" aria-label="닫기">×</button>
+      </div>
+      <div class="post-images" id="post-images"></div>
+      <div class="post-actions">
+        <a class="post-link label" id="post-source" href="#" target="_blank" rel="noreferrer">X Post</a>
+      </div>
     </div>
   </dialog>
 </body>
