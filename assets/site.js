@@ -13,14 +13,18 @@
     const title = escapeHtml(item.title || `Work ${String(index + 1).padStart(2, "0")}`);
     const meta = escapeHtml(item.meta || "ETETT1309 Archive");
     const model = item.model ? `<span class="model">${escapeHtml(item.model)}</span>` : "";
+    const count = Array.isArray(item.images) && item.images.length > 1
+      ? `<span class="count label">${item.images.length} Photos</span>`
+      : "";
     const alt = escapeHtml(item.alt || title);
+    const focus = item.focus ? ` style="--focus: ${escapeAttribute(item.focus)}"` : "";
     const url = item.url ? escapeAttribute(item.url) : "";
     const media = hasImage
       ? `<img src="${escapeAttribute(item.src)}" alt="${alt}" loading="lazy">`
       : `<div class="placeholder"><span class="mark">✦</span><span class="label">Upload Pending</span></div>`;
     const frame = url
-      ? `<a class="frame" href="${url}" target="_blank" rel="noreferrer">${media}</a>`
-      : `<div class="frame">${media}</div>`;
+      ? `<a class="frame" href="${url}" target="_blank" rel="noreferrer"${focus}>${media}</a>`
+      : `<div class="frame"${focus}>${media}</div>`;
 
     return `
       <article class="work">
@@ -29,6 +33,7 @@
           <b>${title}</b>
           <span>${meta}</span>
           ${model}
+          ${count}
         </div>
       </article>
     `;
@@ -71,23 +76,37 @@
 
       try {
         const token = document.getElementById("token").value.trim();
-        const file = document.getElementById("photo").files[0];
+        const files = Array.from(document.getElementById("photo").files);
         const title = document.getElementById("title").value.trim();
         const meta = document.getElementById("meta").value.trim();
-        const alt = document.getElementById("alt").value.trim() || title;
-        const filename = normalizeFilename(document.getElementById("filename").value, file);
-        const imagePath = `assets/gallery/${filename}`;
+        const model = document.getElementById("model").value.trim();
+        const filenameBase = document.getElementById("filename").value;
 
-        if (!token || !file || !title) throw new Error("업로드 키, 사진, 제목은 필수입니다.");
-        if (file.size > 8 * 1024 * 1024) throw new Error("8MB 이하 이미지만 업로드할 수 있습니다.");
+        if (!token || !files.length || !title || !meta || !model) throw new Error("업로드 키, 사진, 제목, 중제목, 소제목은 필수입니다.");
+        if (files.some((file) => file.size > 8 * 1024 * 1024)) throw new Error("8MB 이하 이미지만 업로드할 수 있습니다.");
 
-        setStatus("Uploading image");
-        await putFile(token, imagePath, await fileToBase64(file), `Upload gallery image ${filename}`);
+        setStatus("Uploading images");
+        const imagePaths = [];
+        for (let index = 0; index < files.length; index += 1) {
+          const file = files[index];
+          const filename = normalizeFilename(filenameBase, file, index, files.length);
+          const imagePath = `assets/gallery/${filename}`;
+          await putFile(token, imagePath, await fileToBase64(file), `Upload gallery image ${filename}`);
+          imagePaths.push(imagePath);
+        }
 
         setStatus("Updating list");
         const current = await getFile(token, GALLERY_PATH);
         const nextItems = parseGallery(current.text);
-        nextItems.push({ src: imagePath, title, meta, alt });
+        nextItems.push({
+          src: imagePaths[0],
+          images: imagePaths,
+          title,
+          meta,
+          model,
+          alt: `${title} ${meta}`,
+          focus: "50% 24%"
+        });
 
         setStatus("Saving");
         const nextGallery = `window.PORTFOLIO_ITEMS = ${JSON.stringify(nextItems, null, 2)};\n`;
@@ -159,14 +178,16 @@
     }
   }
 
-  function normalizeFilename(value, file) {
+  function normalizeFilename(value, file, index, total) {
     const ext = (file.name.match(/\.[a-z0-9]+$/i) || [".jpg"])[0].toLowerCase();
     const base = (value || file.name.replace(/\.[^.]+$/, ""))
       .trim()
       .toLowerCase()
       .replace(/[^a-z0-9가-힣._-]+/g, "-")
       .replace(/^-+|-+$/g, "");
-    return base.endsWith(ext) ? base : `${base || `work-${Date.now()}`}${ext}`;
+    const cleanBase = base.replace(/\.[a-z0-9]+$/i, "") || `work-${Date.now()}`;
+    const suffix = total > 1 ? `-${String(index + 1).padStart(2, "0")}` : "";
+    return `${cleanBase}${suffix}${ext}`;
   }
 
   function fileToBase64(file) {
