@@ -739,6 +739,54 @@
       display: block;
       border: 1px solid rgba(77, 70, 53, .7);
       background: var(--surface);
+      cursor: zoom-in;
+    }
+
+    .image-viewer {
+      width: min(1200px, calc(100% - 28px));
+      height: min(92svh, 980px);
+      border: 1px solid var(--line);
+      background: rgba(8, 8, 8, .96);
+      padding: 0;
+    }
+
+    .image-viewer::backdrop {
+      background: rgba(0, 0, 0, .86);
+      backdrop-filter: blur(8px);
+    }
+
+    .viewer-panel {
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .viewer-head {
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 14px 10px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .viewer-head span {
+      color: var(--muted);
+    }
+
+    .viewer-body {
+      min-height: 0;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+    }
+
+    .viewer-body img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      cursor: zoom-out;
     }
 
     .post-actions {
@@ -1050,6 +1098,18 @@
           <button class="label" id="confirm-delete" type="button">Delete This Post</button>
           <div class="delete-status" id="delete-status"></div>
         </div>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="image-viewer" id="image-viewer">
+    <div class="viewer-panel">
+      <div class="viewer-head">
+        <span class="label" id="viewer-caption">Preview</span>
+        <button class="icon-button" type="button" id="close-viewer" aria-label="닫기">×</button>
+      </div>
+      <div class="viewer-body">
+        <img id="viewer-image" alt="">
       </div>
     </div>
   </dialog>
