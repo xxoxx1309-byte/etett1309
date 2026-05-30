@@ -275,6 +275,10 @@
       margin-bottom: 38px;
     }
 
+    .section-head.compact {
+      align-items: center;
+    }
+
     h2 {
       margin: 0;
       color: var(--text);
@@ -291,6 +295,13 @@
       color: var(--muted);
       line-height: 1.75;
       word-break: keep-all;
+    }
+
+    .gallery-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--dim);
     }
 
     .gallery {
@@ -341,6 +352,12 @@
       font-weight: 300;
       line-height: .85;
       margin-bottom: 18px;
+    }
+
+    .add-work .hint {
+      display: block;
+      color: var(--dim);
+      margin-top: 8px;
     }
 
     .frame {
@@ -469,6 +486,7 @@
       background: var(--surface-low);
       color: var(--text);
       padding: 0;
+      box-shadow: 0 28px 80px rgba(0, 0, 0, .5);
     }
 
     dialog::backdrop {
@@ -477,7 +495,7 @@
     }
 
     .upload-panel {
-      padding: 32px;
+      padding: 28px;
     }
 
     .upload-head {
@@ -506,7 +524,12 @@
 
     .upload-form {
       display: grid;
-      gap: 20px;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px 22px;
+    }
+
+    .upload-form .full {
+      grid-column: 1 / -1;
     }
 
     .upload-form label {
@@ -542,6 +565,7 @@
     }
 
     .submit-button {
+      grid-column: 1 / -1;
       min-height: 52px;
       border: 1px solid var(--primary);
       background: var(--primary);
@@ -556,6 +580,7 @@
     }
 
     .upload-status {
+      grid-column: 1 / -1;
       min-height: 52px;
       border: 1px solid var(--line);
       background: var(--surface);
@@ -604,6 +629,8 @@
       .panel,
       .contact-card { padding: 24px; }
       .contact-row { grid-template-columns: 1fr; gap: 6px; }
+      .upload-panel { padding: 22px; }
+      .upload-form { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -642,12 +669,12 @@
 
     <section id="gallery">
       <div class="wrap">
-        <div class="section-head">
+        <div class="section-head compact">
           <div>
             <p class="label" style="color: var(--primary); margin: 0 0 12px;">Curated Works</p>
             <h2>Portfolio Gallery</h2>
           </div>
-          <p>1:1 정사각형 갤러리입니다. 6번째 칸의 + 버튼을 눌러 사이트에서 바로 사진을 업로드할 수 있습니다.</p>
+          <div class="gallery-actions label">Square Archive</div>
         </div>
         <div class="gallery" id="gallery-grid" aria-live="polite"></div>
       </div>
@@ -749,32 +776,32 @@
         <button class="icon-button" type="button" id="close-upload" aria-label="닫기">×</button>
       </div>
       <form class="upload-form" id="upload-form">
-        <label class="label">
-          GitHub Token
+        <label class="label full">
+          업로드 키
           <input id="token" type="password" autocomplete="off" placeholder="github_pat_... 또는 ghp_..." required>
         </label>
-        <label class="label">
-          Photo
+        <label class="label full">
+          사진
           <input id="photo" type="file" accept="image/jpeg,image/png,image/webp,image/gif" required>
         </label>
         <label class="label">
-          File Name
+          파일명
           <input id="filename" type="text" placeholder="work-01.jpg">
         </label>
         <label class="label">
-          Title
-          <input id="title" type="text" placeholder="작업 제목" required>
+          제목
+          <input id="title" type="text" placeholder="Title" required>
         </label>
         <label class="label">
-          Meta
+          메모
           <input id="meta" type="text" placeholder="Cosplay / Seoul / 2026">
         </label>
         <label class="label">
-          Alt Text
-          <textarea id="alt" placeholder="사진 설명"></textarea>
+          설명
+          <textarea id="alt" placeholder="Alt text"></textarea>
         </label>
         <button class="submit-button label" id="submit-upload" type="submit">Upload</button>
-        <div class="upload-status" id="upload-status">토큰은 브라우저에서 GitHub API 요청에만 사용되고 저장하지 않습니다.</div>
+        <div class="upload-status" id="upload-status">Ready</div>
       </form>
     </div>
   </dialog>
