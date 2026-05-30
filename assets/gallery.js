@@ -204,5 +204,18 @@ window.PORTFOLIO_ITEMS = [
       "https://pbs.twimg.com/media/HJehzhraAAAAp1c.jpg?name=orig",
       "https://pbs.twimg.com/media/HJehzhqbAAAmlku.jpg?name=orig"
     ]
+  },
+  {
+    "src": "assets/gallery/2605_효광_etp-0-01.jpg",
+    "images": [
+      "assets/gallery/2605_효광_etp-0-01.jpg",
+      "assets/gallery/2605_효광_etp-1-02.jpg",
+      "assets/gallery/2605_효광_etp-2-03.jpg"
+    ],
+    "title": "[260522_PlayX4]",
+    "meta": "붕괴:스타레일 | 효광",
+    "model": "𝗠𝗢𝗗𝗘𝗟 : 안쨔 (@9NJJ9N)",
+    "alt": "[260522_PlayX4] 붕괴:스타레일 | 효광",
+    "focus": "50% 24%"
   }
 ];
