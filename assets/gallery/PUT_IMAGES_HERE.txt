@@ -1,0 +1,9 @@
+Upload your portfolio images in this folder.
+
+Recommended file names:
+- work-01.jpg
+- work-02.jpg
+- work-03.jpg
+- work-04.jpg
+
+Then add each file to ../gallery.js.
