@@ -8,12 +8,24 @@
   <meta property="og:description" content="서울-경기권 코스프레 동인, 컨셉촬영 포트폴리오">
   <meta property="og:type" content="website">
   <title>ETETT1309 | Cosplay & Concept Photographer</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.9/static/pretendard.min.css">
   <script defer src="assets/gallery.js"></script>
   <script defer src="assets/site.js"></script>
   <style>
+    @font-face {
+      font-family: "SlowGothic";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/neurimboGothicRegular.woff2") format("woff2");
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Paperlogy";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-4Regular.woff2") format("woff2");
+      font-weight: 400;
+      font-display: swap;
+    }
+
     :root {
       --background: #131313;
       --surface: #1c1b1b;
@@ -34,7 +46,7 @@
       margin: 0;
       background: var(--background);
       color: var(--text);
-      font-family: "Noto Sans KR", "Manrope", system-ui, sans-serif;
+      font-family: "Pretendard", system-ui, sans-serif;
       letter-spacing: 0;
       overflow-x: hidden;
     }
@@ -59,14 +71,14 @@
     }
 
     .label {
-      font-family: "Space Mono", monospace;
+      font-family: "Pretendard", system-ui, sans-serif;
       font-size: 12px;
       line-height: 1.4;
       letter-spacing: .15em;
       text-transform: uppercase;
     }
 
-    .serif { font-family: "Playfair Display", serif; }
+    .serif { font-family: "SlowGothic", "Paperlogy", "Pretendard", sans-serif; }
 
     header {
       position: sticky;
@@ -87,9 +99,9 @@
 
     .brand {
       color: var(--primary);
-      font-family: "Playfair Display", serif;
-      font-size: 24px;
-      font-weight: 500;
+      font-family: "Paperlogy", "Pretendard", sans-serif;
+      font-size: 22px;
+      font-weight: 400;
     }
 
     .nav-links {
@@ -257,7 +269,7 @@
     .sigil strong {
       display: block;
       color: var(--text);
-      font-family: "Playfair Display", serif;
+      font-family: "Paperlogy", "Pretendard", sans-serif;
       font-size: 34px;
       font-weight: 400;
       margin-bottom: 16px;
@@ -282,7 +294,7 @@
     h2 {
       margin: 0;
       color: var(--text);
-      font-family: "Playfair Display", serif;
+      font-family: "SlowGothic", "Paperlogy", "Pretendard", sans-serif;
       font-size: clamp(34px, 5vw, 58px);
       font-weight: 400;
       line-height: 1.08;
@@ -306,13 +318,13 @@
 
     .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 8px;
     }
 
     .work {
       min-width: 0;
-      border: 1px solid rgba(77, 70, 53, .9);
+      border: 1px solid rgba(77, 70, 53, .65);
       background: var(--surface);
       overflow: hidden;
       position: relative;
@@ -321,7 +333,7 @@
 
     .work:hover {
       border-color: var(--primary);
-      transform: translateY(-4px);
+      transform: translateY(-2px);
     }
 
     .add-work {
@@ -342,12 +354,12 @@
     .add-work:hover {
       border-color: var(--primary);
       background: rgba(242, 202, 80, .1);
-      transform: translateY(-4px);
+      transform: translateY(-2px);
     }
 
     .add-work .plus {
       display: block;
-      font-family: "Playfair Display", serif;
+      font-family: "Paperlogy", "Pretendard", sans-serif;
       font-size: 70px;
       font-weight: 300;
       line-height: .85;
@@ -363,9 +375,7 @@
     .frame {
       width: 100%;
       aspect-ratio: 1 / 1;
-      background:
-        linear-gradient(135deg, rgba(242, 202, 80, .08), transparent),
-        var(--surface-high);
+      background: var(--surface-high);
       display: grid;
       place-items: center;
       position: relative;
@@ -389,7 +399,7 @@
     .placeholder .mark {
       display: block;
       color: var(--primary);
-      font-family: "Playfair Display", serif;
+      font-family: "Paperlogy", "Pretendard", sans-serif;
       font-size: 54px;
       line-height: 1;
       margin-bottom: 18px;
@@ -403,7 +413,7 @@
     .meta b {
       display: block;
       color: var(--text);
-      font-family: "Playfair Display", serif;
+      font-family: "Paperlogy", "Pretendard", sans-serif;
       font-size: 24px;
       font-weight: 400;
       margin-bottom: 8px;
