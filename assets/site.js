@@ -3,10 +3,14 @@
   if (!grid) return;
 
   const portfolioItems = Array.isArray(window.PORTFOLIO_ITEMS) ? window.PORTFOLIO_ITEMS : [];
-  renderGallery(portfolioItems);
+  let currentItems = portfolioItems.slice();
+  let reorderEnabled = false;
+  renderGallery(currentItems);
   bindUploader();
+  bindReorderControls();
 
   function renderGallery(itemsToRender) {
+  currentItems = itemsToRender.slice();
   const nextSlot = String(itemsToRender.length + 1).padStart(2, "0");
   grid.innerHTML = itemsToRender.map((item, index) => {
     const hasImage = Boolean(item.src);
@@ -23,7 +27,7 @@
       : `<div class="placeholder"><span class="mark">✦</span><span class="label">Upload Pending</span></div>`;
 
     return `
-      <article class="work" role="button" tabindex="0" data-index="${index}">
+      <article class="work" role="button" tabindex="0" data-index="${index}" draggable="${reorderEnabled ? "true" : "false"}">
         <div class="frame"${focus}>${media}</div>
         <div class="meta">
           <b>${title}</b>
@@ -39,6 +43,7 @@
     </button>
   `;
   bindPostCards(itemsToRender);
+  bindDragOrder();
   }
 
   function bindPostCards(items) {
@@ -54,6 +59,81 @@
     });
   }
 
+  function bindReorderControls() {
+    const toggle = document.getElementById("enable-order");
+    const save = document.getElementById("save-order");
+    const status = document.getElementById("order-status");
+    const token = document.getElementById("order-token");
+    if (!toggle || !save || !status || !token) return;
+
+    toggle.addEventListener("click", () => {
+      reorderEnabled = !reorderEnabled;
+      status.textContent = reorderEnabled ? "Drag cards to reorder" : "";
+      toggle.textContent = reorderEnabled ? "Done" : "Reorder";
+      renderGallery(currentItems);
+    });
+
+    save.addEventListener("click", async () => {
+      const uploadKey = token.value.trim();
+      if (!uploadKey) {
+        status.textContent = "업로드 키를 입력해주세요.";
+        return;
+      }
+      save.disabled = true;
+      status.textContent = "Saving order";
+      try {
+        await githubFetch(uploadKey, `/repos/${OWNER}/${REPO}`);
+        const current = await getFile(uploadKey, GALLERY_PATH);
+        const nextGallery = `window.PORTFOLIO_ITEMS = ${JSON.stringify(currentItems, null, 2)};\n`;
+        await putFile(uploadKey, GALLERY_PATH, textToBase64(nextGallery), "Reorder gallery posts", current.sha);
+        status.textContent = "Saved";
+      } catch (error) {
+        status.textContent = error.message || String(error);
+      } finally {
+        save.disabled = false;
+      }
+    });
+  }
+
+  function bindDragOrder() {
+    if (!reorderEnabled) return;
+    let fromIndex = null;
+
+    grid.querySelectorAll(".work").forEach((card) => {
+      card.addEventListener("dragstart", (event) => {
+        fromIndex = Number(card.dataset.index);
+        card.classList.add("dragging");
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", String(fromIndex));
+      });
+
+      card.addEventListener("dragend", () => {
+        card.classList.remove("dragging");
+        grid.querySelectorAll(".drag-over").forEach((item) => item.classList.remove("drag-over"));
+      });
+
+      card.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        card.classList.add("drag-over");
+      });
+
+      card.addEventListener("dragleave", () => {
+        card.classList.remove("drag-over");
+      });
+
+      card.addEventListener("drop", (event) => {
+        event.preventDefault();
+        card.classList.remove("drag-over");
+        const toIndex = Number(card.dataset.index);
+        if (!Number.isInteger(fromIndex) || !Number.isInteger(toIndex) || fromIndex === toIndex) return;
+        const next = currentItems.slice();
+        const [moved] = next.splice(fromIndex, 1);
+        next.splice(toIndex, 0, moved);
+        renderGallery(next);
+      });
+    });
+  }
+
   function openPost(item) {
     if (!item) return;
     const dialog = document.getElementById("post-dialog");
@@ -63,8 +143,14 @@
     const images = document.getElementById("post-images");
     const source = document.getElementById("post-source");
     const close = document.getElementById("close-post");
-    if (!dialog || !title || !meta || !model || !images || !source || !close) return;
+    const openDelete = document.getElementById("open-delete");
+    const deleteBox = document.getElementById("delete-box");
+    const deleteToken = document.getElementById("delete-token");
+    const confirmDelete = document.getElementById("confirm-delete");
+    const deleteStatus = document.getElementById("delete-status");
+    if (!dialog || !title || !meta || !model || !images || !source || !close || !openDelete || !deleteBox || !deleteToken || !confirmDelete || !deleteStatus) return;
 
+    dialog.dataset.postIndex = String(currentItems.indexOf(item));
     title.textContent = item.title || "";
     meta.textContent = item.meta || "";
     model.textContent = item.model || "";
@@ -87,11 +173,58 @@
       dialog.addEventListener("click", (event) => {
         if (event.target === dialog) dialog.close();
       });
+      openDelete.addEventListener("click", () => {
+        deleteBox.classList.toggle("open");
+      });
+      confirmDelete.addEventListener("click", () => deleteCurrentPost());
       dialog.dataset.bound = "true";
     }
 
+    deleteBox.classList.remove("open");
+    deleteToken.value = "";
+    deleteStatus.textContent = "";
     if (typeof dialog.showModal === "function") dialog.showModal();
     else dialog.setAttribute("open", "");
+  }
+
+  async function deleteCurrentPost() {
+    const dialog = document.getElementById("post-dialog");
+    const deleteToken = document.getElementById("delete-token");
+    const confirmDelete = document.getElementById("confirm-delete");
+    const deleteStatus = document.getElementById("delete-status");
+    if (!dialog || !deleteToken || !confirmDelete || !deleteStatus) return;
+
+    const token = deleteToken.value.trim();
+    const index = Number(dialog.dataset.postIndex);
+    if (!token) {
+      deleteStatus.textContent = "업로드 키를 입력해주세요.";
+      return;
+    }
+    if (!Number.isInteger(index) || index < 0 || index >= currentItems.length) {
+      deleteStatus.textContent = "삭제할 게시물을 찾을 수 없습니다.";
+      return;
+    }
+
+    confirmDelete.disabled = true;
+    deleteStatus.textContent = "Deleting";
+    try {
+      await githubFetch(token, `/repos/${OWNER}/${REPO}`);
+      const current = await getFile(token, GALLERY_PATH);
+      const remoteItems = parseGallery(current.text);
+      const target = currentItems[index];
+      const nextItems = remoteItems.filter((item) => !samePost(item, target));
+      if (nextItems.length === remoteItems.length) throw new Error("목록에서 해당 게시물을 찾지 못했습니다.");
+      const nextGallery = `window.PORTFOLIO_ITEMS = ${JSON.stringify(nextItems, null, 2)};\n`;
+      await putFile(token, GALLERY_PATH, textToBase64(nextGallery), "Delete gallery post", current.sha);
+      deleteStatus.textContent = "Deleted";
+      renderGallery(nextItems);
+      bindUploader();
+      dialog.close();
+    } catch (error) {
+      deleteStatus.textContent = error.message || String(error);
+    } finally {
+      confirmDelete.disabled = false;
+    }
   }
 
   function bindUploader() {
@@ -252,6 +385,13 @@
     } catch {
       return [];
     }
+  }
+
+  function samePost(left, right) {
+    if (!left || !right) return false;
+    if (left.url && right.url && left.url === right.url) return true;
+    if (left.src && right.src && left.src === right.src) return true;
+    return left.title === right.title && left.meta === right.meta && left.model === right.model;
   }
 
   function normalizeFilename(value, file, index, total) {
