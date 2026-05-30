@@ -1,4 +1,4 @@
-﻿window.PORTFOLIO_ITEMS = [
+window.PORTFOLIO_ITEMS = [
   {
     "src": "https://pbs.twimg.com/media/FrCeZhwaYAAKh0n.jpg?name=orig",
     "title": "[221203_AGF 2022]",
@@ -133,7 +133,18 @@
     "alt": "PlayX4 이터널 리턴 메이드 레니 코스프레 게시물",
     "url": "https://x.com/etett1309/status/2060293292290646350",
     "focus": "50% 24%"
+  },
+  {
+    "src": "assets/gallery/2605_효광_etp-0-01.jpg",
+    "images": [
+      "assets/gallery/2605_효광_etp-0-01.jpg",
+      "assets/gallery/2605_효광_etp-1-02.jpg",
+      "assets/gallery/2605_효광_etp-2-03.jpg"
+    ],
+    "title": "[260522_PlayX4]",
+    "meta": "붕괴:스타레일 | 효광",
+    "model": "𝗠𝗢𝗗𝗘𝗟 : 안쨔 (@9NJJ9N)",
+    "alt": "[260522_PlayX4] 붕괴:스타레일 | 효광",
+    "focus": "50% 24%"
   }
 ];
-
-
