@@ -11,6 +11,18 @@
 
 ## 사진 올리는 법
 
+### 관리자 페이지에서 올리기
+
+`admin.html`을 열고 GitHub 토큰, 사진, 제목을 입력하면 저장소에 사진이 업로드되고 `assets/gallery.js`가 자동 갱신됩니다.
+
+배포 후 주소:
+
+`https://xxoxx1309-byte.github.io/etett1309/admin.html`
+
+토큰은 브라우저에서 GitHub API 요청에만 사용됩니다. 공용 PC에서는 사용하지 않는 것을 권장합니다.
+
+### 직접 파일로 올리기
+
 1. 사진 파일을 `assets/gallery/` 폴더에 넣습니다.
    예: `assets/gallery/work-01.jpg`
 
