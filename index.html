@@ -313,6 +313,36 @@
       transform: translateY(-4px);
     }
 
+    .add-work {
+      min-height: 0;
+      aspect-ratio: 1 / 1;
+      border: 1px dashed rgba(242, 202, 80, .7);
+      background:
+        linear-gradient(135deg, rgba(242, 202, 80, .08), transparent),
+        var(--surface-low);
+      color: var(--primary);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      transition: background .5s ease, border-color .5s ease, transform .5s ease;
+    }
+
+    .add-work:hover {
+      border-color: var(--primary);
+      background: rgba(242, 202, 80, .1);
+      transform: translateY(-4px);
+    }
+
+    .add-work .plus {
+      display: block;
+      font-family: "Playfair Display", serif;
+      font-size: 70px;
+      font-weight: 300;
+      line-height: .85;
+      margin-bottom: 18px;
+    }
+
     .frame {
       width: 100%;
       aspect-ratio: 1 / 1;
@@ -433,6 +463,110 @@
 
     .contact-row b { color: var(--primary); }
 
+    dialog {
+      width: min(720px, calc(100% - 28px));
+      border: 1px solid var(--line);
+      background: var(--surface-low);
+      color: var(--text);
+      padding: 0;
+    }
+
+    dialog::backdrop {
+      background: rgba(0, 0, 0, .72);
+      backdrop-filter: blur(8px);
+    }
+
+    .upload-panel {
+      padding: 32px;
+    }
+
+    .upload-head {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 22px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 24px;
+    }
+
+    .upload-head h2 {
+      font-size: clamp(30px, 6vw, 46px);
+    }
+
+    .icon-button {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--primary);
+      cursor: pointer;
+      font-size: 24px;
+    }
+
+    .upload-form {
+      display: grid;
+      gap: 20px;
+    }
+
+    .upload-form label {
+      display: grid;
+      gap: 9px;
+      color: var(--primary);
+    }
+
+    .upload-form input,
+    .upload-form textarea {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+      outline: 0;
+      padding: 12px 0;
+    }
+
+    .upload-form textarea {
+      min-height: 76px;
+      resize: vertical;
+    }
+
+    .upload-form input:focus,
+    .upload-form textarea:focus { border-color: var(--primary); }
+
+    .upload-form input[type="file"] {
+      border: 1px dashed var(--line);
+      background: var(--surface);
+      padding: 16px;
+    }
+
+    .submit-button {
+      min-height: 52px;
+      border: 1px solid var(--primary);
+      background: var(--primary);
+      color: var(--on-primary);
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .submit-button:disabled {
+      cursor: wait;
+      opacity: .55;
+    }
+
+    .upload-status {
+      min-height: 52px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--muted);
+      padding: 14px;
+      white-space: pre-wrap;
+    }
+
+    .upload-status.ok { color: var(--primary); }
+    .upload-status.error { color: #ffb4ab; }
+
     footer {
       padding: 64px 0;
       border-top: 1px solid var(--line);
@@ -513,7 +647,7 @@
             <p class="label" style="color: var(--primary); margin: 0 0 12px;">Curated Works</p>
             <h2>Portfolio Gallery</h2>
           </div>
-          <p>사진 파일을 추가하면 이 영역에 작업물이 표시됩니다. 외부 예시 이미지는 사용하지 않았습니다.</p>
+          <p>1:1 정사각형 갤러리입니다. 6번째 칸의 + 버튼을 눌러 사이트에서 바로 사진을 업로드할 수 있습니다.</p>
         </div>
         <div class="gallery" id="gallery-grid" aria-live="polite"></div>
       </div>
@@ -604,5 +738,45 @@
       <span>Cosplay, doujin & concept photography.</span>
     </div>
   </footer>
+
+  <dialog id="upload-dialog">
+    <div class="upload-panel">
+      <div class="upload-head">
+        <div>
+          <p class="label" style="color: var(--primary); margin: 0 0 10px;">Upload</p>
+          <h2>사진 추가</h2>
+        </div>
+        <button class="icon-button" type="button" id="close-upload" aria-label="닫기">×</button>
+      </div>
+      <form class="upload-form" id="upload-form">
+        <label class="label">
+          GitHub Token
+          <input id="token" type="password" autocomplete="off" placeholder="github_pat_... 또는 ghp_..." required>
+        </label>
+        <label class="label">
+          Photo
+          <input id="photo" type="file" accept="image/jpeg,image/png,image/webp,image/gif" required>
+        </label>
+        <label class="label">
+          File Name
+          <input id="filename" type="text" placeholder="work-01.jpg">
+        </label>
+        <label class="label">
+          Title
+          <input id="title" type="text" placeholder="작업 제목" required>
+        </label>
+        <label class="label">
+          Meta
+          <input id="meta" type="text" placeholder="Cosplay / Seoul / 2026">
+        </label>
+        <label class="label">
+          Alt Text
+          <textarea id="alt" placeholder="사진 설명"></textarea>
+        </label>
+        <button class="submit-button label" id="submit-upload" type="submit">Upload</button>
+        <div class="upload-status" id="upload-status">토큰은 브라우저에서 GitHub API 요청에만 사용되고 저장하지 않습니다.</div>
+      </form>
+    </div>
+  </dialog>
 </body>
 </html>
