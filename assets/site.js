@@ -2,17 +2,8 @@
   const grid = document.getElementById("gallery-grid");
   if (!grid) return;
 
-  const emptySlots = [
-    { title: "Slot 01", meta: "Pending" },
-    { title: "Slot 02", meta: "Pending" },
-    { title: "Slot 03", meta: "Pending" },
-    { title: "Slot 04", meta: "Pending" },
-    { title: "Slot 05", meta: "Pending" }
-  ];
-
   const portfolioItems = Array.isArray(window.PORTFOLIO_ITEMS) ? window.PORTFOLIO_ITEMS : [];
-  const items = portfolioItems.concat(emptySlots.slice(0, Math.max(0, 5 - portfolioItems.length)));
-  renderGallery(items);
+  renderGallery(portfolioItems);
   bindUploader();
 
   function renderGallery(itemsToRender) {
@@ -96,8 +87,7 @@
         await putFile(token, GALLERY_PATH, textToBase64(nextGallery), "Update gallery list", current.sha);
 
         setStatus("Done", "ok");
-        const updatedItems = nextItems.concat(emptySlots.slice(0, Math.max(0, 5 - nextItems.length)));
-        renderGallery(updatedItems);
+        renderGallery(nextItems);
         bindUploader();
         form.reset();
       } catch (error) {
