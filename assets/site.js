@@ -83,9 +83,7 @@
       status.textContent = "Saving order";
       try {
         await githubFetch(uploadKey, `/repos/${OWNER}/${REPO}`);
-        const current = await getFile(uploadKey, GALLERY_PATH);
-        const nextGallery = `window.PORTFOLIO_ITEMS = ${JSON.stringify(currentItems, null, 2)};\n`;
-        await putFile(uploadKey, GALLERY_PATH, textToBase64(nextGallery), "Reorder gallery posts", current.sha);
+        await updateGalleryFile(uploadKey, () => currentItems, "Reorder gallery posts");
         status.textContent = "Saved";
       } catch (error) {
         status.textContent = error.message || String(error);
@@ -236,13 +234,12 @@
     deleteStatus.textContent = "Deleting";
     try {
       await githubFetch(token, `/repos/${OWNER}/${REPO}`);
-      const current = await getFile(token, GALLERY_PATH);
-      const remoteItems = parseGallery(current.text);
       const target = currentItems[index];
-      const nextItems = remoteItems.filter((item) => !samePost(item, target));
-      if (nextItems.length === remoteItems.length) throw new Error("목록에서 해당 게시물을 찾지 못했습니다.");
-      const nextGallery = `window.PORTFOLIO_ITEMS = ${JSON.stringify(nextItems, null, 2)};\n`;
-      await putFile(token, GALLERY_PATH, textToBase64(nextGallery), "Delete gallery post", current.sha);
+      const nextItems = await updateGalleryFile(token, (remoteItems) => {
+        const filtered = remoteItems.filter((item) => !samePost(item, target));
+        if (filtered.length === remoteItems.length) throw new Error("목록에서 해당 게시물을 찾지 못했습니다.");
+        return filtered;
+      }, "Delete gallery post");
       deleteStatus.textContent = "Deleted";
       renderGallery(nextItems);
       bindUploader();
@@ -310,9 +307,7 @@
         }
 
         setStatus("Updating list");
-        const current = await getFile(token, GALLERY_PATH);
-        const nextItems = parseGallery(current.text);
-        nextItems.push({
+        const newItem = {
           src: imagePaths[0],
           images: imagePaths,
           title,
@@ -320,11 +315,10 @@
           model,
           alt: `${title} ${meta}`,
           focus: "50% 24%"
-        });
+        };
 
         setStatus("Saving");
-        const nextGallery = `window.PORTFOLIO_ITEMS = ${JSON.stringify(nextItems, null, 2)};\n`;
-        await putFile(token, GALLERY_PATH, textToBase64(nextGallery), "Update gallery list", current.sha);
+        const nextItems = await updateGalleryFile(token, (remoteItems) => remoteItems.concat(newItem), "Update gallery list");
 
         setStatus("Done", "ok");
         renderGallery(nextItems);
@@ -392,6 +386,29 @@
       method: "PUT",
       body: JSON.stringify(body)
     });
+  }
+
+  async function updateGalleryFile(token, transform, message) {
+    let lastError;
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      try {
+        const current = await getFile(token, GALLERY_PATH);
+        const remoteItems = parseGallery(current.text);
+        const nextItems = transform(remoteItems);
+        const nextGallery = `window.PORTFOLIO_ITEMS = ${JSON.stringify(nextItems, null, 2)};\n`;
+        await putFile(token, GALLERY_PATH, textToBase64(nextGallery), message, current.sha);
+        return nextItems;
+      } catch (error) {
+        lastError = error;
+        if (error.status !== 409) throw error;
+        await wait(650 * (attempt + 1));
+      }
+    }
+    throw lastError;
+  }
+
+  function wait(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   function explainGithubError(status, message) {
