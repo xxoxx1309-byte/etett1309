@@ -12,13 +12,17 @@
     const title = escapeHtml(item.title || `Work ${String(index + 1).padStart(2, "0")}`);
     const meta = escapeHtml(item.meta || "ETETT1309 Archive");
     const alt = escapeHtml(item.alt || title);
+    const url = item.url ? escapeAttribute(item.url) : "";
     const media = hasImage
       ? `<img src="${escapeAttribute(item.src)}" alt="${alt}" loading="lazy">`
       : `<div class="placeholder"><span class="mark">✦</span><span class="label">Upload Pending</span></div>`;
+    const frame = url
+      ? `<a class="frame" href="${url}" target="_blank" rel="noreferrer">${media}</a>`
+      : `<div class="frame">${media}</div>`;
 
     return `
       <article class="work">
-        <div class="frame">${media}</div>
+        ${frame}
         <div class="meta">
           <b>${title}</b>
           <span>${meta}</span>
