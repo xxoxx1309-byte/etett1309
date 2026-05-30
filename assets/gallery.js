@@ -118,5 +118,11 @@ window.PORTFOLIO_ITEMS = [
     "model": "𝗠𝗢𝗗𝗘𝗟 : MIU (@miuu4u)",
     "alt": "PlayX4 이터널 리턴 메이드 레니 코스프레 게시물",
     "url": "https://x.com/etett1309/status/2060293292290646350"
+  },
+  {
+    "src": "assets/gallery/dd.jpg",
+    "title": "효광",
+    "meta": "11",
+    "alt": "111"
   }
 ];
