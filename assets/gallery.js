@@ -217,5 +217,19 @@ window.PORTFOLIO_ITEMS = [
       "https://pbs.twimg.com/media/HJehzhraAAAAp1c.jpg?name=orig",
       "https://pbs.twimg.com/media/HJehzhqbAAAmlku.jpg?name=orig"
     ]
+  },
+  {
+    "src": "assets/gallery/img_1662-01.jpeg",
+    "images": [
+      "assets/gallery/img_1662-01.jpeg",
+      "assets/gallery/img_1663-02.jpeg",
+      "assets/gallery/img_1666-03.jpeg",
+      "assets/gallery/img_1665-04.jpeg"
+    ],
+    "title": "[260524_PlayX4]",
+    "meta": "바이오하자드 레퀴엠 | 그레이스 애쉬크로프트",
+    "model": "𝗠𝗢𝗗𝗘𝗟 : 너울 (@NEOUL_WAVE)",
+    "alt": "[260524_PlayX4] 바이오하자드 레퀴엠 | 그레이스 애쉬크로프트",
+    "focus": "50% 24%"
   }
 ];
