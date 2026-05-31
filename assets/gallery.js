@@ -232,5 +232,20 @@ window.PORTFOLIO_ITEMS = [
     "model": "𝗠𝗢𝗗𝗘𝗟 : 너울 (@NEOUL_WAVE)",
     "alt": "[260524_PlayX4] 바이오하자드 레퀴엠 | 그레이스 애쉬크로프트",
     "focus": "50% 24%"
+  },
+  {
+    "src": "assets/gallery/2605_그레이스_etp-0-대형-01.jpg",
+    "images": [
+      "assets/gallery/2605_그레이스_etp-0-대형-01.jpg",
+      "assets/gallery/2605_그레이스_etp-3-대형-02.jpg",
+      "assets/gallery/2605_그레이스_etp-4-대형-03.jpg",
+      "assets/gallery/2605_그레이스_etp-5-대형-04.jpg",
+      "assets/gallery/2605_그레이스_etp-6-대형-05.jpg"
+    ],
+    "title": "[260524_PlayX4]",
+    "meta": "바이오하자드 레퀴엠 | 그레이스 애쉬크로프트",
+    "model": "𝗠𝗢𝗗𝗘𝗟 : 너울 (@NEOUL_WAVE)",
+    "alt": "[260524_PlayX4] 바이오하자드 레퀴엠 | 그레이스 애쉬크로프트",
+    "focus": "50% 24%"
   }
 ];
